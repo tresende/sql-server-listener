@@ -20,7 +20,7 @@ namespace SQLListener
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
-                var query = "select id, name from item2 order by id desc";
+                var query = "select id, name from dbo.item2 order by id desc";
                 SqlCommand command = new SqlCommand(query, connection);
                 SqlDependency dependency = new SqlDependency(command);
                 dependency.OnChange += OnChange;
