@@ -5,12 +5,6 @@ using System.Data.SqlClient;
 
 namespace SQLListener
 {
-    public class Item
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-    }
-
     public class Program
     {
         static void Main(string[] args)
@@ -25,7 +19,8 @@ namespace SQLListener
             using (SqlConnection connection = new SqlConnection(cs))
             {
                 connection.Open();
-                SqlCommand command = new SqlCommand("select id, name from item2 order by 1 desc", connection);
+                var query = "select id, name from item2 order by id desc";
+                SqlCommand command = new SqlCommand(query, connection);
                 SqlDependency dependency = new SqlDependency(command);
                 dependency.OnChange += OnChange;
                 SqlDependency.Start(cs);
