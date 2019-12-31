@@ -1,6 +1,7 @@
 ﻿
 using Newtonsoft.Json;
 using System;
+using System.Configuration;
 using System.Data.SqlClient;
 
 namespace SQLListener
@@ -15,19 +16,24 @@ namespace SQLListener
 
         private static void Listen()
         {
-            var cs = "Data Source=.\\SQLEXPRESS;Initial Catalog=Ports;Integrated Security=True";
-            using (SqlConnection connection = new SqlConnection(cs))
+            string connectionString = GetConnectionString();
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
                 var query = "select id, name from item2 order by id desc";
                 SqlCommand command = new SqlCommand(query, connection);
                 SqlDependency dependency = new SqlDependency(command);
                 dependency.OnChange += OnChange;
-                SqlDependency.Start(cs);
+                SqlDependency.Start(connectionString);
                 var item = GetItem(command);
                 command.Dispose();
                 Print(item);
             }
+        }
+
+        private static string GetConnectionString()
+        {
+            return ConfigurationManager.ConnectionStrings["trigger-database"].ConnectionString;
         }
 
         private static void Print(Item item)
